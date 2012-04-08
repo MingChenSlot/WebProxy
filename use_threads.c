@@ -44,7 +44,7 @@ void *process_one_http_request(void *connectionfd)
 
 	printf("Connected by Client\n");
 
-	if( (n = read(connfd, buf, MAXCHAR)) < 0 )
+	if( (n = readline(connfd, buf, MAXCHAR)) < 0 )
 		err_sys("No data has been read!\n");
 
 	print(buf);

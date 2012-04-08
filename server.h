@@ -31,6 +31,7 @@
 #define SERVERPORT  12345
 #define LISTENQSIZE 1024
 #define MAXCHAR 4096*4
+#define MAXLINE 2000
 #define SA struct sockaddr
 
 void process_one_request(int listenfd, int connectionfd);
@@ -39,6 +40,7 @@ void init_thread_pool(int n); // only used in use_threads.cc
 ssize_t readn(int fd, void *bufptr, size_t n);
 ssize_t writen(int fd, const void *bufptr, size_t n);
 void print(char *bufptr);
+ssize_t readline(int fd, void *bufptr, size_t maxlen);
 
 /* parse http */
 
