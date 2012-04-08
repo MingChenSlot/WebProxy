@@ -7,7 +7,6 @@
 #include "server.h"
 #include <pthread.h>
 #include <stdlib.h>
-#include <malloc.h>
 
 ssize_t readn(int fd, void *bufptr, size_t n)
 {
@@ -69,6 +68,7 @@ void print(char *bufptr)
 }
 
 /* Thread safety readline */
+
 static pthread_key_t rl_key;
 static pthread_once_t rl_once = PTHREAD_ONCE_INIT;
 

@@ -13,6 +13,7 @@ pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 
 static LIST list;
+static CACHE cache;
 
 void enqueue(int sock)
 {
@@ -37,7 +38,9 @@ int dequeue()
 
 void *process_one_http_request(void *connectionfd)
 {
-	char buf[MAXCHAR + 1];
+	char buf[MAXCHAR];
+	char method[MAXLINE], url[MAXLINE], protocol[MAXLINE];
+	char filename[MAXCHAR];
 	size_t n;
 	int connfd;
 	connfd = *((int *) connectionfd);
@@ -45,17 +48,40 @@ void *process_one_http_request(void *connectionfd)
 	printf("Connected by Client\n");
 
 	if( (n = readline(connfd, buf, MAXCHAR)) < 0 )
-		err_sys("No data has been read!\n");
+	{
+		perror("No data has been read!\n");
+		goto Exit;
+	}
 
 	print(buf);
+	char path[MAXCHAR + 1];
+	if( sscanf(buf, "%[^ ] %[^ ] %[^ ]", method, url, protocol) != 3 )
+	{
+		perror("Can't parse msg");
+		goto Exit;
+	}
+	sprintf(filename, "./%s", &url[1]);
+	FILE *fp = fopen(filename, "r");
+	if (fp == (FILE*) 0)
+	{
+		perror("Cannot open file");
+		goto Exit;
+	}
 
-	if( writen(connfd, buf, n) < 0)
-		err_sys("Can't send msg to clinet!\n");
+	sprintf(buf, "HTTP/1.0 %d%s\r\nContent-type: %s\r\n\r\n", 200, get_status_text(200), get_mime_type(&url));
+	writen(connfd, buf, strlen(buf));
 
+	while ( (n = fread(buf, 1, MAXCHAR, fp)) > 0) {
+		writen(connfd, buf, n);
+	}
+
+	fclose(fp);
+Exit:
 	close(connfd);
 	printf("Connection closed.\n");
 	return(NULL);
 }
+
 
 void* thread_main(void *arg)
 {

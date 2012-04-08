@@ -4,6 +4,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../cache.c \
 ../http.c \
 ../list.c \
 ../server.c \
@@ -11,6 +12,7 @@ C_SRCS += \
 ../use_threads.c 
 
 OBJS += \
+./cache.o \
 ./http.o \
 ./list.o \
 ./server.o \
@@ -18,6 +20,7 @@ OBJS += \
 ./use_threads.o 
 
 C_DEPS += \
+./cache.d \
 ./http.d \
 ./list.d \
 ./server.d \

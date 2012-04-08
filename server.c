@@ -9,7 +9,8 @@
 
 uint16_t serverport;
 uint16_t threads;
-short int cache;
+short int cache_flag;
+char wwwroot[] = ".";
 
 static void
 usage(char *program)
@@ -28,7 +29,7 @@ parse_args(int argc, char** argv)
 		} else if (strcmp(argv[n], "-t") == 0) {
 			threads = atoi(argv[++n]);
 		} else if (strcmp(argv[n], "-c") == 0) {
-			cache = 1;
+			cache_flag = 1;
 		} else
 		  usage(argv[0]);
 		n++;
@@ -65,7 +66,12 @@ main(int argc, char **argv)
 	    err_sys("listen error");
 
 	printf("Listen to %s:%d\n", inet_ntoa(servaddr.sin_addr), serverport);
-	init_thread_pool(threads);
+	if(threads > 0)
+	{
+		init_thread_pool(threads);
+		sleep(1);
+	}
+
 	while(1)
 	{
 		clisocklen = sizeof(cliaddr);
