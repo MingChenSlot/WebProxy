@@ -10,7 +10,7 @@
 uint16_t serverport;
 uint16_t threads;
 short int cache_flag;
-char wwwroot[] = ".";
+char wwwroot[] = "./";
 
 static void
 usage(char *program)
@@ -23,6 +23,8 @@ static void
 parse_args(int argc, char** argv)
 {
 	int n = 1;
+	if (argc == 1)
+		usage(argv[0]);
 	while (n < argc) {
 		if (strcmp(argv[n], "-l") == 0) {
 			serverport = atoi(argv[++n]);
@@ -54,6 +56,7 @@ main(int argc, char **argv)
 	bzero(&servaddr, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+//	servaddr.sin_addr.s_addr = inet_addr("192.168.1.102");
 	servaddr.sin_port = htons(serverport);
 
 	if(setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(int)) == -1)

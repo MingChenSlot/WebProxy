@@ -61,6 +61,17 @@ void *process_one_http_request(void *connectionfd)
 		goto Exit;
 	}
 	sprintf(filename, "./%s", &url[1]);
+
+	/* use cache */
+	if (cache_flag)
+	{
+		int key = b_getid(filename, 5);
+		int fsize = 0;
+		fsize = b_getbuf(&buf, key);
+		if (fsize > 0)
+			writen(connfd, buf, n);
+		goto Exit;
+	}
 	FILE *fp = fopen(filename, "r");
 	if (fp == (FILE*) 0)
 	{

@@ -145,5 +145,39 @@ readline(int fd, void *bufptr, size_t maxlen)
 	return n;
 }
 
+//ssize_t
+//str_readline(char *buf, void *line, size_t maxlen)
+//{
+//	size_t n, rc;
+//	char c, *ptr;
+//	RLINE *tsd;
+//
+//	pthread_once(&rl_once, readline_once);
+//	if((tsd = pthread_getspecific(rl_key)) == NULL)
+//	{
+//		tsd = calloc(1, sizeof(RLINE));
+//		pthread_setspecific(rl_key, tsd);
+//	}
+//
+//	ptr = bufptr;
+//	for(n = 1; n < maxlen; n++)
+//	{
+//		if((rc = read_helper(tsd, fd, &c)) == 1)
+//		{
+//			*ptr++ = c;
+//			if(c == '\n')
+//				break;
+//		}else if(rc == 0)
+//		{
+//			*ptr = 0;
+//			return (n-1);
+//		}else
+//			return (-1);
+//	}
+//
+//	*ptr = 0;
+//	return n;
+//}
+
 
 
