@@ -18,6 +18,9 @@ We implement our program in C programming language. Thus, we need to implement m
 Furthermore, since we tried to accomplish the cache part, we once implemented the http parsing. The two files are in http.c and cache.c. However, we'v not finished this part because we had some problems on dealing with the buf read from client. 
 
 
+COMMENTS
+
+During the process of our implementation, we'v faced two problems. The first one is that we have not understood the specification of the assignment. So, at the first time, we wrote a web server other than web proxy. Finally we found that we needed to implement web proxy. Then we revised our program to satisfy the requirement, and the revised part is imcompatible with the cache part so that we removed the cache part from our program since our time is very limited and we have no time to modify the cache part. The other problem is that we use the http_load zip file directly and did not check the urls, which connect to node2 instead of node1. After communicating professor Zhou we finally found our problem and solved it. These two problems consumed too much time. So, we submitted our program late and we apologized for it as well as our program is not perfect since it has no cache and has relatively low efficiency on proxing. 
 
 
 
@@ -37,7 +40,7 @@ Rsp:   246     527     790     1109    1396    1704    1996      3184    4198   
 
 Run time output:
 
-[5083709142@head http_load]$ ./http_load -parallel 100 -proxy node4:20000 -seconds 100 urls
+[5083709142@node4 http_load]$ ./http_load -parallel 100 -proxy node4:20000 -seconds 100 urls
 12977 fetches, 100 max parallel, 1.11772e+10 bytes, in 100 seconds
 861306 mean bytes/connection
 Throughput: 1.11772e+08 bytes/sec, 129.77 fetches/sec
