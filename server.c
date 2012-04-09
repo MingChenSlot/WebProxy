@@ -5,12 +5,11 @@
  *      Author: chenming
  */
 #include "server.h"
-#include "list.h"
 
 uint16_t serverport;
 uint16_t threads;
 short int cache_flag;
-char wwwroot[] = "./";
+char wwwroot[] = ".";
 
 static void
 usage(char *program)
@@ -57,6 +56,7 @@ main(int argc, char **argv)
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
 //	servaddr.sin_addr.s_addr = inet_addr("192.168.1.102");
+//	inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
 	servaddr.sin_port = htons(serverport);
 
 	if(setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(int)) == -1)

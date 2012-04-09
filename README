@@ -1,0 +1,19 @@
+Liu Guangshuo 5083709042 liuguangshuo@gmail.com
+Cheng Songzhe 5083709148 chengsongzhe@gmail.com
+Chen Ming 5083709174 mingchen1989@gmail.com
+
+
+STATUS OF IMPLEMENTATION
+
+We implement our program in C programming language. Thus, we need to implement most of the data structures by ourselves, including the Queue and linked list. In our program, we use multi-threads with thread pool to implement the web proxy server. Furthermore, since we tried to accomplish the cache part, we implement the http parsing. Thus, if the request url is cached, we can return the files to client without querying the server. The program is time consuming since we use C, however, the runtime and throughput is relatively well. 
+
+
+
+
+
+TEST RESULT
+
+throughput table:
+
+run time output:
+

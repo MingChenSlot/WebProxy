@@ -36,6 +36,27 @@ int dequeue()
 	return sock;
 }
 
+static int get_host_name(char* buf,char *hostname, int length)
+{
+
+        char *p=strstr(buf,"Host: ");
+        int i,j = 0;
+        if(!p) {
+                p=strstr(buf,"host: ");
+        }
+        bzero(hostname,256);
+        for(i = (p-buf) + 6, j = 0; i < length; i++, j++)
+        {
+                if(buf[i] =='\r') {
+                        hostname[j] ='\0';
+                        return 0;
+                }
+                else
+                        hostname[j] = buf[i];
+        }
+        return -1;
+}
+
 void *process_one_http_request(void *connectionfd)
 {
 	char buf[MAXCHAR];
@@ -54,45 +75,39 @@ void *process_one_http_request(void *connectionfd)
 	}
 
 	print(buf);
-	char path[MAXCHAR + 1];
-	if( sscanf(buf, "%[^ ] %[^ ] %[^ ]", method, url, protocol) != 3 )
-	{
-		perror("Can't parse msg");
-		goto Exit;
-	}
-	sprintf(filename, "./%s", &url[1]);
+	char webserverAddr[256];
+	get_host_name(buf, webserverAddr, MAXLINE);
 
-	/* use cache */
-	if (cache_flag)
+	printf("webserver address is: %s:", webserverAddr);
+	struct sockaddr_in webserver_addr;
+	int sfd;
+	memset(&webserver_addr, 0, sizeof(webserver_addr));
+	webserver_addr.sin_family = AF_INET;
+	webserver_addr.sin_port = htons(80);
+	webserver_addr.sin_addr.s_addr = inet_addr(webserverAddr);
+	sfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (sfd < 0)
 	{
-		int key = b_getid(filename, 5);
-		int fsize = 0;
-		fsize = b_getbuf(&buf, key);
-		if (fsize > 0)
+			perror("cannot create socket");
+			goto Exit;
+	}
+	if (connect(sfd, (SA *) &webserver_addr, sizeof(webserver_addr)) < 0)
+	{
+			perror("cannot connect to webserver");
+			goto Exit;
+	}
+	writen(sfd, buf, strlen(buf) + 1);
+
+	while ( (n = read(sfd, buf, MAXCHAR)) > 0) {
 			writen(connfd, buf, n);
-		goto Exit;
-	}
-	FILE *fp = fopen(filename, "r");
-	if (fp == (FILE*) 0)
-	{
-		perror("Cannot open file");
-		goto Exit;
 	}
 
-	sprintf(buf, "HTTP/1.0 %d%s\r\nContent-type: %s\r\n\r\n", 200, get_status_text(200), get_mime_type(&url));
-	writen(connfd, buf, strlen(buf));
-
-	while ( (n = fread(buf, 1, MAXCHAR, fp)) > 0) {
-		writen(connfd, buf, n);
-	}
-
-	fclose(fp);
 Exit:
 	close(connfd);
+	close(sfd);
 	printf("Connection closed.\n");
 	return(NULL);
 }
-
 
 void* thread_main(void *arg)
 {

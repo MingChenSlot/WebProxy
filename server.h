@@ -35,12 +35,6 @@
 #define MAXBUF 1460
 #define SA struct sockaddr
 
-typedef struct sock{
-	int connfd;
-	char * write_buf;
-	int * write_cnt;
-}SOCK;
-
 extern char wwwroot[];
 extern short int cache_flag;
 
@@ -71,9 +65,7 @@ int flush_buf(int fd, char *write_buf, int *write_cnt);
 
 /* Parse HTTP */
 
-const char* get_mime_type(char *filename);
+const char *get_mime_type(char *filename);
 const char *get_status_text(int status);
-void generate_http_common_response_headers(SOCK *ss);
-void http_error(int status, SOCK *ss);
 
 #endif /* SERVER_H_ */

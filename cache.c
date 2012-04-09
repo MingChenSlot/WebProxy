@@ -11,7 +11,6 @@ void b_resetbuf(CACHE *cache)
 	cache->current = 1;
 }
 
-//获得字典id
 int b_getid(unsigned char* url, int len)
 {
 	int a = 0;
@@ -21,13 +20,11 @@ int b_getid(unsigned char* url, int len)
 	return a % 1000;
 }
 
-
-signed char b_putbuf(CACHE *cache, unsigned char* data, int len, int id)
+int b_putbuf(CACHE *cache, unsigned char* data, int len, int id)
 {
 	int i = 0;
 	if( len >= 0.5 * MAX_BUF_LEN || len + cache->current > MAX_BUF_LEN)
 	{
-		// 文件过大或缓存已满
 		return -1;
 	}
 	cache->len[id] = len;
@@ -39,7 +36,23 @@ signed char b_putbuf(CACHE *cache, unsigned char* data, int len, int id)
 	return 0;
 }
 
-//取数据，返回长度，失败返回0
+int b_putbuf_c(CACHE *cache, unsigned char* data, int len, int id)
+{
+	int i = 0;
+	if( len >= 0.5 * MAX_BUF_LEN || len + cache->current > MAX_BUF_LEN)
+	{
+		cache->len[id] = 0;
+		cache->current = cache->loc[id];
+		return -1;
+	}
+	cache->len[id] += len;
+	for (i = 0; i < len; i++)
+	{
+		cache->buf[cache->current++] = data[i];
+	}
+	return 0;
+}
+
 int b_getbuf(CACHE *cache, unsigned char *data, int id)
 {
 	unsigned char i = 0;
