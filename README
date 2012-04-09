@@ -1,11 +1,21 @@
-Liu Guangshuo 5083709042 liuguangshuo@gmail.com
-Cheng Songzhe 5083709148 chengsongzhe@gmail.com
-Chen Ming 5083709174 mingchen1989@gmail.com
+ID: 5083709042
+email: liuguangshuo@gmail.com
+Name: Guangshuo Liu
+
+ID: 5083709148
+email: chengsongzhe@gmail.com
+Name: Songzhe Cheng
+
+ID: 5083709174
+email: mingchen1989@gmail.com
+Name: Ming Chen
 
 
 STATUS OF IMPLEMENTATION
 
-We implement our program in C programming language. Thus, we need to implement most of the data structures by ourselves, including the Queue and linked list. In our program, we use multi-threads with thread pool to implement the web proxy server. Furthermore, since we tried to accomplish the cache part, we implement the http parsing. Thus, if the request url is cached, we can return the files to client without querying the server. The program is time consuming since we use C, however, the runtime and throughput is relatively well. 
+We implement our program in C programming language. Thus, we need to implement most of the data structures by ourselves, including the Queue and linked list. In our program, we use multi-threads with thread pool to implement the web proxy server. 
+
+Furthermore, since we tried to accomplish the cache part, we once implemented the http parsing. The two files are in http.c and cache.c. However, we'v not finished this part because we had some problems on dealing with the buf read from client. 
 
 
 
@@ -13,7 +23,34 @@ We implement our program in C programming language. Thus, we need to implement m
 
 TEST RESULT
 
-throughput table:
+Throughput table:
 
-run time output:
+Got this table with 100 threads in proxy server.
 
+Throughput in MB/s, Response time in msec.
+---------------------------------------------------------------------------
+Rate:   15     30      45      60      75      90      105       120     135      150
+
+Thr:   11016   11300   10936   10998   10546   10427   10783     10618   10543    10399
+Rsp:   246     527     790     1109    1396    1704    1996      3184    4198     4708
+
+
+Run time output:
+
+[5083709142@head http_load]$ ./http_load -parallel 100 -proxy node4:20000 -seconds 100 urls
+12977 fetches, 100 max parallel, 1.11772e+10 bytes, in 100 seconds
+861306 mean bytes/connection
+Throughput: 1.11772e+08 bytes/sec, 129.77 fetches/sec
+msecs/connect: 40.8927 mean, 3035.73 max, 0.077 min
+msecs/first-response: 178.322 mean, 3846.02 max, 5.941 min
+HTTP response codes:
+  code 200 -- 12977
+
+[5083709174@head http_load]$ ./http_load -parallel 100 -proxy node3:15000 -seconds 100 urls
+1453 fetches, 100 max parallel, 1.02393e+09 bytes, in 100 seconds
+704703 mean bytes/connection
+Throughput: 1.02393e+07 bytes/sec, 14.53 fetches/sec
+msecs/connect: 10.0301 mean, 22.283 max, 0.19 min
+msecs/first-response: 1653.82 mean, 4691.51 max, 2.089 min
+HTTP response codes:
+  code 200 -- 1453
